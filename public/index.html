@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0a0c0f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="E-Max AI">
+<meta name="description" content="E20 Mileage Optimizer — Track your car's fuel efficiency under India's E20 ethanol mandate">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>E-Max AI — Mileage Optimizer</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+:root {
+  --bg:      #0a0c0f;
+  --bg2:     #111418;
+  --bg3:     #181c22;
+  --bg4:     #1e232b;
+  --border:  #2a3040;
+  --border2: #3a4255;
+  --text:    #e8eaf0;
+  --text2:   #8892a4;
+  --text3:   #4e5a6e;
+  --accent:  #00d4aa;
+  --accent2: #00a882;
+  --warn:    #f59e0b;
+  --danger:  #ef4444;
+  --blue:    #3b82f6;
+  --purple:  #8b5cf6;
+  --r:       12px;
+  --rsm:     8px;
+  --font-h:  'Rajdhani', sans-serif;
+  --font-b:  'DM Sans', sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;background:var(--bg);}
+body{font-family:var(--font-b);font-size:14px;color:var(--text);display:flex;justify-content:center;}
+
+/* ── PHONE SHELL ── */
+.phone{width:100%;max-width:430px;height:100vh;display:flex;flex-direction:column;background:var(--bg);position:relative;overflow:hidden;}
+
+/* ── SCREENS ── */
+.screen{display:none;flex-direction:column;flex:1;min-height:0;animation:fadeUp .22s ease;}
+.screen.active{display:flex;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── STATUS BAR ── */
+.sbar{display:flex;justify-content:space-between;align-items:center;padding:10px 18px 4px;font-size:11px;color:var(--text3);flex-shrink:0;}
+.sbar-mid{font-family:var(--font-h);font-size:11px;color:var(--accent);letter-spacing:.08em;}
+
+/* ── ARAI BADGE — persistent on every screen ── */
+.arai-badge{
+  background:rgba(0,212,170,.05);
+  border-top:1px solid rgba(0,212,170,.12);
+  border-bottom:1px solid rgba(0,212,170,.12);
+  padding:6px 18px;
+  display:flex;align-items:center;gap:8px;
+  flex-shrink:0;
+}
+.arai-badge i{color:var(--accent);font-size:13px;flex-shrink:0;}
+.arai-badge-text{font-size:10px;color:var(--text2);line-height:1.45;}
+.arai-badge-text strong{color:var(--accent);font-weight:600;display:block;font-family:var(--font-h);font-size:11px;letter-spacing:.04em;}
+
+/* ── SCROLL AREA ── */
+.scroll{flex:1;overflow-y:auto;padding:10px 14px 16px;-webkit-overflow-scrolling:touch;}
+.scroll::-webkit-scrollbar{width:0;}
+
+/* ── BOTTOM NAV ── */
+.bnav{display:flex;background:var(--bg2);border-top:1px solid var(--border);padding:6px 0 10px;flex-shrink:0;}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:3px 0;color:var(--text3);font-family:var(--font-h);font-size:10px;letter-spacing:.07em;transition:color .2s;}
+.ni i{font-size:22px;}
+.ni.active{color:var(--accent);}
+
+/* ── CARDS ── */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:10px;}
+.card-accent{border-color:rgba(0,212,170,.35);}
+.card-warn{border-color:rgba(245,158,11,.4);}
+.card-danger{border-color:rgba(239,68,68,.4);}
+.card-info{border-color:rgba(59,130,246,.35);}
+
+/* ── SECTION LABEL ── */
+.slbl{font-family:var(--font-h);font-size:10px;color:var(--text3);letter-spacing:.14em;text-transform:uppercase;margin:14px 0 7px;}
+
+/* ── SCREEN HEADER ── */
+.shdr{padding:10px 16px 6px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+.stitle{font-family:var(--font-h);font-size:22px;font-weight:700;letter-spacing:.04em;}
+.ssub{font-size:11px;color:var(--text2);margin-top:1px;}
+
+/* ── METRICS ── */
+.mrow{display:flex;gap:8px;margin-bottom:10px;}
+.met{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:var(--rsm);padding:10px 8px;text-align:center;}
+.mval{font-family:var(--font-h);font-size:24px;font-weight:700;color:var(--accent);}
+.mval.warn{color:var(--warn);}
+.mval.danger{color:var(--danger);}
+.mval.blue{color:var(--blue);}
+.mlbl{font-size:9px;color:var(--text2);letter-spacing:.07em;margin-top:2px;}
+
+/* ── INPUTS ── */
+.ig{margin-bottom:12px;}
+.il{font-size:10px;color:var(--text2);letter-spacing:.09em;margin-bottom:5px;font-family:var(--font-h);}
+.ifield{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rsm);padding:11px 13px;color:var(--text);font-family:var(--font-b);font-size:15px;outline:none;transition:border-color .2s;-webkit-appearance:none;}
+.ifield:focus{border-color:var(--accent);}
+.ifield::placeholder{color:var(--text3);}
+select.ifield{cursor:pointer;}
+select.ifield option{background:var(--bg3);color:var(--text);}
+
+/* ── BUTTONS ── */
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:13px 18px;border-radius:var(--rsm);font-family:var(--font-h);font-size:15px;font-weight:600;letter-spacing:.07em;cursor:pointer;border:none;transition:all .18s;width:100%;margin-bottom:8px;}
+.btn-primary{background:var(--accent);color:#000;}
+.btn-primary:active{background:var(--accent2);transform:scale(.98);}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border2);}
+.btn-ghost:active{background:var(--bg3);}
+.btn-warn{background:var(--warn);color:#000;}
+.btn-danger{background:rgba(239,68,68,.15);color:var(--danger);border:1px solid rgba(239,68,68,.3);}
+
+/* ── BADGES ── */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:500;font-family:var(--font-h);letter-spacing:.06em;}
+.bg-green{background:rgba(0,212,170,.1);color:var(--accent);border:1px solid rgba(0,212,170,.25);}
+.bg-warn{background:rgba(245,158,11,.1);color:var(--warn);border:1px solid rgba(245,158,11,.25);}
+.bg-danger{background:rgba(239,68,68,.1);color:var(--danger);border:1px solid rgba(239,68,68,.25);}
+.bg-blue{background:rgba(59,130,246,.1);color:var(--blue);border:1px solid rgba(59,130,246,.25);}
+.bg-gray{background:rgba(255,255,255,.05);color:var(--text2);border:1px solid var(--border);}
+
+/* ── ALERT BANNERS ── */
+.abanner{display:flex;gap:10px;align-items:flex-start;padding:11px 13px;border-radius:var(--rsm);margin-bottom:10px;}
+.abanner i{font-size:17px;flex-shrink:0;margin-top:1px;}
+.ab-warn{background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.3);color:var(--warn);}
+.ab-danger{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.3);color:var(--danger);}
+.ab-info{background:rgba(0,212,170,.05);border:1px solid rgba(0,212,170,.2);color:var(--accent);}
+.ab-blue{background:rgba(59,130,246,.07);border:1px solid rgba(59,130,246,.3);color:var(--blue);}
+.abanner-title{font-family:var(--font-h);font-size:12px;font-weight:600;margin-bottom:3px;}
+.abanner-body{font-size:12px;opacity:.88;line-height:1.5;color:var(--text2);}
+
+/* ── LIST ITEMS ── */
+.li{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid var(--border);}
+.li:last-child{border-bottom:none;}
+.lico{width:36px;height:36px;border-radius:var(--rsm);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:17px;}
+.lico.teal{background:rgba(0,212,170,.1);color:var(--accent);}
+.lico.warn{background:rgba(245,158,11,.1);color:var(--warn);}
+.lico.blue{background:rgba(59,130,246,.1);color:var(--blue);}
+.lico.purple{background:rgba(139,92,246,.1);color:var(--purple);}
+.lico.danger{background:rgba(239,68,68,.1);color:var(--danger);}
+.lico.gray{background:rgba(255,255,255,.05);color:var(--text2);}
+
+/* ── TOGGLE ── */
+.toggle-wrap{display:flex;gap:0;border:1px solid var(--border2);border-radius:var(--rsm);overflow:hidden;margin-bottom:12px;}
+.toggle-opt{flex:1;padding:10px;text-align:center;cursor:pointer;font-family:var(--font-h);font-size:13px;letter-spacing:.06em;color:var(--text2);background:transparent;transition:all .18s;border:none;}
+.toggle-opt.selected{background:var(--accent);color:#000;font-weight:700;}
+
+/* ── PROGRESS ── */
+.pbar{height:5px;background:var(--bg4);border-radius:3px;overflow:hidden;margin-top:8px;}
+.pfill{height:100%;border-radius:3px;transition:width .7s ease;}
+
+/* ── CALIBRATION PROGRESS ── */
+.cal-step{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
+.cal-step:last-child{border-bottom:none;}
+.cal-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-h);font-size:13px;font-weight:700;flex-shrink:0;}
+.cal-dot.done{background:rgba(0,212,170,.15);color:var(--accent);border:1px solid rgba(0,212,170,.4);}
+.cal-dot.pending{background:var(--bg4);color:var(--text3);border:1px solid var(--border);}
+
+/* ── COACH TIP ── */
+.ctip{background:linear-gradient(135deg,rgba(0,212,170,.05),rgba(59,130,246,.05));border:1px solid rgba(0,212,170,.12);border-radius:var(--r);padding:13px;margin-bottom:9px;display:flex;gap:11px;align-items:flex-start;}
+.ctip i{color:var(--accent);font-size:19px;flex-shrink:0;}
+.ctip-title{font-family:var(--font-h);font-size:12px;font-weight:600;margin-bottom:3px;}
+.ctip-body{font-size:12px;color:var(--text2);line-height:1.55;}
+
+/* ── TRIP ROW ── */
+.trow{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);}
+.trow:last-child{border-bottom:none;}
+
+/* ── SPLASH ── */
+#splash{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .5s;}
+@keyframes pulse-ring{0%{transform:scale(1);opacity:.5}100%{transform:scale(2.4);opacity:0}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.ble-ring{position:absolute;width:76px;height:76px;border-radius:50%;border:1px solid var(--accent);animation:pulse-ring 2.2s ease-out infinite;}
+.ble-ring:nth-child(2){animation-delay:.7s;}
+.ble-ring:nth-child(3){animation-delay:1.4s;}
+.spin{animation:spin 1s linear infinite;}
+.live-dot{display:inline-block;width:6px;height:6px;background:var(--accent);border-radius:50%;animation:blink 1.4s ease-in-out infinite;}
+
+/* ── ONBOARDING ── */
+.ob-icon{width:80px;height:80px;border-radius:50%;background:rgba(0,212,170,.08);border:1px solid rgba(0,212,170,.2);display:flex;align-items:center;justify-content:center;font-size:36px;color:var(--accent);margin:0 auto 20px;}
+
+/* ── CHART SVG ── */
+.chart-svg{width:100%;overflow:visible;}
+
+/* ── RT BARS ── */
+.rtrow{display:flex;align-items:center;gap:8px;margin-bottom:9px;}
+.rtlbl{font-size:11px;color:var(--text2);width:88px;flex-shrink:0;}
+.rtbar{flex:1;height:5px;background:var(--bg4);border-radius:3px;overflow:hidden;}
+.rtfill{height:100%;border-radius:3px;transition:width .9s ease;}
+.rtval{font-family:var(--font-h);font-size:12px;font-weight:600;width:46px;text-align:right;}
+
+/* ── DIVIDER ── */
+.div{height:1px;background:var(--border);margin:10px 0;}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:500;display:flex;align-items:flex-end;justify-content:center;}
+.modal-overlay.hidden{display:none;}
+.modal-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r) var(--r) 0 0;padding:20px 16px 30px;width:100%;max-width:430px;animation:slideUp .25s ease;}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-title{font-family:var(--font-h);font-size:18px;font-weight:700;margin-bottom:4px;}
+
+/* ── LOADING STATE ── */
+.loading-card{display:flex;align-items:center;gap:12px;padding:16px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);margin-bottom:10px;}
+
+/* ── RESPONSIVE ── */
+@media(max-height:680px){.arai-badge{padding:4px 18px;}.arai-badge-text{font-size:9px;}}
+</style>
+</head>
+<body>
+
+<!-- ── SPLASH ── -->
+<div id="splash">
+  <div style="position:relative;width:96px;height:96px;display:flex;align-items:center;justify-content:center;margin-bottom:28px">
+    <div class="ble-ring"></div><div class="ble-ring"></div><div class="ble-ring"></div>
+    <div style="width:60px;height:60px;background:rgba(0,212,170,.1);border:1px solid var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;color:var(--accent);position:relative;z-index:1"><i class="ti ti-gauge"></i></div>
+  </div>
+  <div style="font-family:var(--font-h);font-size:42px;font-weight:700;color:var(--accent);letter-spacing:.1em">E·MAX AI</div>
+  <div style="font-size:11px;color:var(--text3);letter-spacing:.18em;margin-top:4px">MILEAGE OPTIMIZER · E20 READY</div>
+  <div style="margin-top:10px;font-size:10px;color:rgba(0,212,170,.5);text-align:center;padding:0 40px;line-height:1.5">
+    <strong style="color:var(--accent)">Calibrated as per ARAI testing protocol</strong><br>Automotive Research Association of India · MoRTH
+  </div>
+  <div style="margin-top:32px;color:var(--text3);font-size:12px;display:flex;align-items:center;gap:8px">
+    <i class="ti ti-loader-2 spin" style="font-size:14px;color:var(--accent)"></i> Initialising
+  </div>
+</div>
+
+<div class="phone" id="app" style="display:none">
+
+<!-- STATUS BAR -->
+<div class="sbar">
+  <span id="clock">9:41</span>
+  <span class="sbar-mid">E·MAX AI</span>
+  <div style="display:flex;align-items:center;gap:6px">
+    <i class="ti ti-bluetooth" style="font-size:13px;color:var(--accent)" id="ble-icon"></i>
+    <span style="font-size:10px">87%</span>
+  </div>
+</div>
+
+<!-- ARAI TRUST BADGE — every screen -->
+<div class="arai-badge">
+  <i class="ti ti-shield-check"></i>
+  <div class="arai-badge-text">
+    <strong>ARAI STANDARD · MORTH INDIA</strong>
+    Mileage baseline calculated as per Automotive Research Association of India fuel efficiency testing protocol — India's official vehicle testing body under the Ministry of Road Transport &amp; Highways.
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SCREEN: ONBOARDING / REGISTRATION
+════════════════════════════════════ -->
+<div class="screen active" id="s-onboard">
+  <div class="scroll" style="padding-top:20px">
+
+    <!-- Step indicator -->
+    <div style="display:flex;justify-content:center;gap:6px;margin-bottom:24px" id="ob-dots">
+      <div style="width:20px;height:5px;border-radius:3px;background:var(--accent)"></div>
+      <div style="width:8px; height:5px;border-radius:3px;background:var(--border2)"></div>
+      <div style="width:8px; height:5px;border-radius:3px;background:var(--border2)"></div>
+    </div>
+
+    <!-- Step 1: Welcome -->
+    <div id="ob1">
+      <div class="ob-icon"><i class="ti ti-gauge"></i></div>
+      <div style="text-align:center;margin-bottom:24px">
+        <div style="font-family:var(--font-h);font-size:26px;font-weight:700;margin-bottom:8px">Welcome to E·MAX AI</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.6;padding:0 10px">
+          India's E20 ethanol mandate has reduced your car's mileage by 5–10%. This app tracks exactly how much, detects anomalies, and tells you what to do about it.
+        </div>
+        <div style="margin-top:14px;padding:10px 14px;background:rgba(0,212,170,.05);border:1px solid rgba(0,212,170,.15);border-radius:var(--rsm);font-size:11px;color:var(--text2);line-height:1.5;text-align:left">
+          <strong style="color:var(--accent);font-family:var(--font-h)">HOW BASELINE WORKS</strong><br>
+          Your E0 mileage baseline is auto-calculated from your first 3 fill-ups using ARAI-standard protocol — no guesswork, no self-reporting. AI analysis activates from fill-up 4.
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="obNext(2)"><i class="ti ti-arrow-right"></i> GET STARTED</button>
+    </div>
+
+    <!-- Step 2: Identity -->
+    <div id="ob2" style="display:none">
+      <div style="font-family:var(--font-h);font-size:20px;font-weight:700;margin-bottom:4px">Beta Registration</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:16px">No personal data stored in our database. Your Tester ID is anonymous.</div>
+
+      <div class="ig">
+        <div class="il">YOUR NAME (local only, not uploaded)</div>
+        <input class="ifield" id="ob-name" type="text" placeholder="e.g. Rahul Sharma">
+      </div>
+      <div class="ig">
+        <div class="il">CITY</div>
+        <select class="ifield" id="ob-city">
+          <option value="">Select your city</option>
+          <option>Delhi NCR</option><option>Mumbai</option><option>Bengaluru</option>
+          <option>Chennai</option><option>Hyderabad</option><option>Pune</option>
+          <option>Kolkata</option><option>Ahmedabad</option><option>Jaipur</option>
+          <option>Lucknow</option><option>Chandigarh</option><option>Surat</option>
+          <option>Kochi</option><option>Other</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" onclick="obNext(3)"><i class="ti ti-arrow-right"></i> NEXT — VEHICLE DETAILS</button>
+      <button class="btn btn-ghost" onclick="obNext(1)"><i class="ti ti-arrow-left"></i> BACK</button>
+    </div>
+
+    <!-- Step 3: Vehicle -->
+    <div id="ob3" style="display:none">
+      <div style="font-family:var(--font-h);font-size:20px;font-weight:700;margin-bottom:4px">Your Vehicle</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:16px">Saved locally on your phone only.</div>
+
+      <div class="ig">
+        <div class="il">CAR MAKE</div>
+        <select class="ifield" id="ob-make">
+          <option value="">Select make</option>
+          <option>Maruti Suzuki</option><option>Hyundai</option><option>Tata</option>
+          <option>Honda</option><option>Toyota</option><option>Kia</option>
+          <option>MG</option><option>Skoda</option><option>Volkswagen</option>
+          <option>Renault</option><option>Nissan</option><option>Ford</option><option>Other</option>
+        </select>
+      </div>
+      <div class="ig">
+        <div class="il">CAR MODEL</div>
+        <input class="ifield" id="ob-model" type="text" placeholder="e.g. Swift ZXI, i20 Asta, Nexon XZ">
+      </div>
+      <div style="display:flex;gap:8px">
+        <div class="ig" style="flex:1">
+          <div class="il">YEAR</div>
+          <select class="ifield" id="ob-year">
+            <option value="">Year</option>
+            <option>2024</option><option>2023</option><option>2022</option><option>2021</option>
+            <option>2020</option><option>2019</option><option>2018</option><option>2017</option>
+            <option>2016</option><option>2015</option><option>2014 or older</option>
+          </select>
+        </div>
+        <div class="ig" style="flex:1">
+          <div class="il">ENGINE TYPE</div>
+          <select class="ifield" id="ob-engine">
+            <option value="">Type</option>
+            <option>Petrol</option><option>Petrol-CNG</option>
+            <option>Mild Hybrid Petrol</option><option>Strong Hybrid</option>
+          </select>
+        </div>
+      </div>
+      <div class="ig">
+        <div class="il">REGISTRATION NUMBER</div>
+        <input class="ifield" id="ob-reg" type="text" placeholder="e.g. MH12 AX 4421" style="text-transform:uppercase">
+      </div>
+      <div class="ig">
+        <div class="il">CURRENT ODOMETER READING (KM) — TODAY</div>
+        <input class="ifield" id="ob-odo" type="number" placeholder="e.g. 42318">
+        <div style="font-size:10px;color:var(--text3);margin-top:4px">Check your dashboard right now and enter today's reading. This is your Day 1 baseline.</div>
+      </div>
+      <button class="btn btn-primary" onclick="completeOnboarding()"><i class="ti ti-check"></i> START TRACKING</button>
+      <button class="btn btn-ghost" onclick="obNext(2)"><i class="ti ti-arrow-left"></i> BACK</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SCREEN: DASHBOARD
+════════════════════════════════════ -->
+<div class="screen" id="s-dashboard">
+  <div class="shdr">
+    <div>
+      <div class="stitle">DASHBOARD</div>
+      <div class="ssub" id="dash-vehicle">—</div>
+    </div>
+    <span class="badge bg-green" id="conn-badge"><span class="live-dot"></span>&nbsp;TRACKING</span>
+  </div>
+  <div class="scroll">
+
+    <!-- Tester ID + calibration state -->
+    <div class="abanner ab-info" id="cal-banner">
+      <i class="ti ti-adjustments"></i>
+      <div>
+        <div class="abanner-title" id="cal-title">BASELINE CALIBRATION IN PROGRESS</div>
+        <div class="abanner-body" id="cal-body">Log your first 3 full-tank fill-ups to establish your personal E0 baseline. AI analysis activates after fill-up 3.</div>
+      </div>
+    </div>
+
+    <!-- Efficiency gauge -->
+    <div class="card card-accent">
+      <div style="display:flex;justify-content:center;padding:4px 0 8px">
+        <svg width="190" height="110" viewBox="0 0 190 110" class="chart-svg">
+          <defs>
+            <linearGradient id="ag" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#ef4444"/>
+              <stop offset="50%" stop-color="#f59e0b"/>
+              <stop offset="100%" stop-color="#00d4aa"/>
+            </linearGradient>
+          </defs>
+          <path d="M 15 100 A 80 80 0 0 1 175 100" fill="none" stroke="#1e232b" stroke-width="11" stroke-linecap="round"/>
+          <path id="arc-fill" d="M 15 100 A 80 80 0 0 1 175 100" fill="none" stroke="url(#ag)" stroke-width="11" stroke-linecap="round" stroke-dasharray="251" stroke-dashoffset="126" style="transition:stroke-dashoffset 1.2s ease"/>
+          <text id="eff-num" x="95" y="86" text-anchor="middle" font-family="Rajdhani" font-size="36" font-weight="700" fill="#00d4aa">—</text>
+          <text x="95" y="103" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#8892a4">EFFICIENCY SCORE</text>
+          <text x="15" y="114" font-family="DM Sans" font-size="9" fill="#4e5a6e">0</text>
+          <text x="170" y="114" font-family="DM Sans" font-size="9" fill="#4e5a6e">100</text>
+        </svg>
+      </div>
+      <div class="mrow" style="margin-bottom:0">
+        <div class="met"><div class="mval" id="d-kml">—</div><div class="mlbl">KM / LITRE</div></div>
+        <div class="met"><div class="mval warn" id="d-drop">—</div><div class="mlbl">VS BASELINE</div></div>
+        <div class="met"><div class="mval blue" id="d-cpm">—</div><div class="mlbl">COST / KM</div></div>
+      </div>
+    </div>
+
+    <!-- Calibration tracker (shown during first 3 fills) -->
+    <div class="card" id="cal-tracker">
+      <div class="slbl" style="margin-top:0">BASELINE CALIBRATION — ARAI PROTOCOL</div>
+      <div id="cal-steps">
+        <div class="cal-step"><div class="cal-dot pending" id="cs1">1</div><div><div style="font-family:var(--font-h);font-size:13px">Fill-up 1 of 3</div><div style="font-size:11px;color:var(--text3)">Not logged yet</div></div></div>
+        <div class="cal-step"><div class="cal-dot pending" id="cs2">2</div><div><div style="font-family:var(--font-h);font-size:13px">Fill-up 2 of 3</div><div style="font-size:11px;color:var(--text3)">Not logged yet</div></div></div>
+        <div class="cal-step"><div class="cal-dot pending" id="cs3">3</div><div><div style="font-family:var(--font-h);font-size:13px">Fill-up 3 of 3</div><div style="font-size:11px;color:var(--text3)">Not logged yet</div></div></div>
+      </div>
+      <div class="pbar" style="margin-top:12px"><div class="pfill" id="cal-pbar" style="width:0%;background:var(--accent)"></div></div>
+    </div>
+
+    <!-- AI Verdict card (hidden until fill 4) -->
+    <div class="card card-accent" id="verdict-card" style="display:none">
+      <div class="slbl" style="margin-top:0">LATEST AI VERDICT</div>
+      <div id="verdict-text" style="font-size:13px;color:var(--text2);line-height:1.6"></div>
+      <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+        <span class="badge bg-gray" id="v-alert">—</span>
+        <span class="badge bg-gray" id="v-anomaly">—</span>
+      </div>
+    </div>
+
+    <!-- Coaching tips -->
+    <div class="slbl">E20 COACHING</div>
+    <div class="ctip">
+      <i class="ti ti-fuel"></i>
+      <div>
+        <div class="ctip-title">E20 ENERGY DENSITY</div>
+        <div class="ctip-body">E20 fuel has 5–7% lower energy content than pure petrol. A drop of up to 10% in KM/L is normal and expected — it is not a mechanical fault.</div>
+      </div>
+    </div>
+    <div class="ctip" id="ai-coach-tip" style="display:none">
+      <i class="ti ti-brain"></i>
+      <div>
+        <div class="ctip-title">AI COACHING TIP</div>
+        <div class="ctip-body" id="ai-coach-body">—</div>
+      </div>
+    </div>
+
+    <!-- Service countdown -->
+    <div class="slbl">SERVICE COUNTDOWN</div>
+    <div class="card">
+      <div class="li">
+        <div class="lico teal"><i class="ti ti-droplet"></i></div>
+        <div style="flex:1"><div style="font-family:var(--font-h);font-size:13px;font-weight:600">Ethanol Conditioner</div><div style="font-size:11px;color:var(--text2)">Add at next dry tank fill</div></div>
+        <div style="text-align:right"><div style="font-family:var(--font-h);font-size:14px;color:var(--accent)" id="svc-add">— km</div><div style="font-size:9px;color:var(--text3)">REMAINING</div></div>
+      </div>
+      <div class="li">
+        <div class="lico warn"><i class="ti ti-bolt"></i></div>
+        <div style="flex:1"><div style="font-family:var(--font-h);font-size:13px;font-weight:600">Spark Plug</div><div style="font-size:11px;color:var(--text2)">AI-adjusted E20 interval</div></div>
+        <div style="text-align:right"><div style="font-family:var(--font-h);font-size:14px;color:var(--warn)" id="svc-spark">— km</div><div style="font-size:9px;color:var(--text3)">REMAINING</div></div>
+      </div>
+      <div class="li" style="border-bottom:none">
+        <div class="lico blue"><i class="ti ti-wind"></i></div>
+        <div style="flex:1"><div style="font-family:var(--font-h);font-size:13px;font-weight:600">Air Filter</div><div style="font-size:11px;color:var(--text2)">E20 carbon deposit adjusted</div></div>
+        <div style="text-align:right"><div style="font-family:var(--font-h);font-size:14px;color:var(--blue)" id="svc-air">— km</div><div style="font-size:9px;color:var(--text3)">REMAINING</div></div>
+      </div>
+    </div>
+
+    <div style="height:6px"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SCREEN: REFUEL
+════════════════════════════════════ -->
+<div class="screen" id="s-refuel">
+  <div class="shdr">
+    <div><div class="stitle">LOG FILL-UP</div><div class="ssub">Every field matters for accuracy</div></div>
+  </div>
+  <div class="scroll">
+
+    <div class="card">
+      <div class="ig">
+        <div class="il">CURRENT ODOMETER READING (KM)</div>
+        <input class="ifield" id="r-odo" type="number" placeholder="Read from your dashboard now">
+      </div>
+      <div class="ig">
+        <div class="il">LITRES FILLED</div>
+        <input class="ifield" id="r-litres" type="number" step="0.1" placeholder="e.g. 38.5">
+      </div>
+      <div class="ig">
+        <div class="il">AMOUNT PAID (₹)</div>
+        <input class="ifield" id="r-amount" type="number" placeholder="e.g. 3850">
+      </div>
+      <div class="ig">
+        <div class="il">FUEL STATION NAME / AREA</div>
+        <input class="ifield" id="r-station" type="text" placeholder="e.g. HP Pump, Koramangala">
+      </div>
+      <div class="ig">
+        <div class="il">SEASON</div>
+        <select class="ifield" id="r-season">
+          <option value="">Select season</option>
+          <option>Monsoon (Jun–Sep)</option>
+          <option>Post-Monsoon (Oct)</option>
+          <option>Winter (Nov–Feb)</option>
+          <option>Summer (Mar–May)</option>
+        </select>
+      </div>
+      <div class="ig" style="margin-bottom:4px">
+        <div class="il">WAS THIS A FULL TANK FILL?</div>
+        <div class="toggle-wrap">
+          <button class="toggle-opt selected" id="ft-yes" onclick="setFullTank(true)">YES — FULL TANK</button>
+          <button class="toggle-opt" id="ft-no" onclick="setFullTank(false)">NO — PARTIAL</button>
+        </div>
+        <div style="font-size:10px;color:var(--text3)">Full tank gives the most accurate KM/L reading.</div>
+      </div>
+    </div>
+
+    <!-- AI Preview -->
+    <div id="ai-preview" style="display:none">
+      <div class="card card-accent">
+        <div class="slbl" style="margin-top:0">INSTANT CALCULATION</div>
+        <div class="mrow">
+          <div class="met"><div class="mval" id="p-kml">—</div><div class="mlbl">KM/L</div></div>
+          <div class="met"><div class="mval" id="p-drop">—</div><div class="mlbl">VS BASELINE</div></div>
+          <div class="met"><div class="mval blue" id="p-cpm">—</div><div class="mlbl">₹/KM</div></div>
+        </div>
+        <div class="div"></div>
+        <div id="p-verdict" style="font-size:12px;color:var(--text2);line-height:1.6"></div>
+      </div>
+
+      <div id="loading-ai" class="loading-card" style="display:none">
+        <i class="ti ti-loader-2 spin" style="color:var(--accent);font-size:20px"></i>
+        <div>
+          <div style="font-family:var(--font-h);font-size:13px;font-weight:600">AI ANALYSING</div>
+          <div style="font-size:11px;color:var(--text2)">Sending to E-Max AI engine…</div>
+        </div>
+      </div>
+
+      <div id="ai-result-card" class="card" style="display:none">
+        <div class="slbl" style="margin-top:0">AI VERDICT</div>
+        <div id="ai-verdict-text" style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:10px"></div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+          <span class="badge bg-gray" id="ai-alert-badge">—</span>
+          <span class="badge bg-gray" id="ai-anomaly-badge">—</span>
+        </div>
+        <div class="ctip" style="margin-bottom:0">
+          <i class="ti ti-bulb"></i>
+          <div><div class="ctip-title">COACHING TIP</div><div class="ctip-body" id="ai-tip-text">—</div></div>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" onclick="calcFillup()"><i class="ti ti-calculator"></i> CALCULATE</button>
+    <button class="btn btn-ghost" id="save-btn" onclick="saveFillup()" style="display:none"><i class="ti ti-device-floppy"></i> SAVE FILL-UP</button>
+
+    <div style="height:6px"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SCREEN: HISTORY / ANALYTICS
+════════════════════════════════════ -->
+<div class="screen" id="s-history">
+  <div class="shdr">
+    <div><div class="stitle">ANALYTICS</div><div class="ssub">Your E20 performance history</div></div>
+  </div>
+  <div class="scroll">
+
+    <div class="mrow">
+      <div class="met"><div class="mval" id="h-avg">—</div><div class="mlbl">AVG KM/L</div></div>
+      <div class="met"><div class="mval warn" id="h-drop">—</div><div class="mlbl">AVG DROP</div></div>
+      <div class="met"><div class="mval blue" id="h-fills">0</div><div class="mlbl">FILL-UPS</div></div>
+    </div>
+
+    <!-- Trend chart -->
+    <div class="card" id="chart-card">
+      <div style="font-family:var(--font-h);font-size:13px;font-weight:600;margin-bottom:10px">KM/L TREND</div>
+      <svg id="trend-svg" class="chart-svg" viewBox="0 0 300 90" style="height:90px">
+        <text x="150" y="50" text-anchor="middle" font-family="DM Sans" font-size="11" fill="#4e5a6e">Log 2+ fill-ups to see your trend</text>
+      </svg>
+    </div>
+
+    <!-- Fill-up log -->
+    <div class="slbl">FILL-UP LOG</div>
+    <div class="card" id="fill-log">
+      <div style="font-size:12px;color:var(--text3);text-align:center;padding:16px 0">No fill-ups logged yet. Tap REFUEL to start.</div>
+    </div>
+
+    <div style="height:6px"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SCREEN: SETTINGS / PROFILE
+════════════════════════════════════ -->
+<div class="screen" id="s-settings">
+  <div class="shdr">
+    <div><div class="stitle">PROFILE</div><div class="ssub">Vehicle · thresholds · data</div></div>
+  </div>
+  <div class="scroll">
+
+    <!-- Tester card -->
+    <div class="card card-accent">
+      <div style="display:flex;align-items:center;gap:14px">
+        <div class="lico teal" style="width:48px;height:48px;font-size:22px"><i class="ti ti-user-check"></i></div>
+        <div>
+          <div style="font-family:var(--font-h);font-size:18px;font-weight:700" id="s-testerid">EMAX000</div>
+          <div style="font-size:12px;color:var(--text2)" id="s-city">—</div>
+          <div style="margin-top:4px"><span class="badge bg-green">BETA TESTER</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vehicle profile -->
+    <div class="slbl">VEHICLE PROFILE</div>
+    <div class="card" id="s-veh-card">
+      <div class="li"><div class="lico gray"><i class="ti ti-car"></i></div><div style="flex:1"><div style="font-family:var(--font-h);font-size:13px">Make &amp; Model</div></div><div style="font-size:12px;color:var(--text2);text-align:right" id="s-makemodel">—</div></div>
+      <div class="li"><div class="lico gray"><i class="ti ti-calendar"></i></div><div style="flex:1"><div style="font-family:var(--font-h);font-size:13px">Year &amp; Engine</div></div><div style="font-size:12px;color:var(--text2);text-align:right" id="s-yeareng">—</div></div>
+      <div class="li"><div class="lico gray"><i class="ti ti-id-badge-2"></i></div><div style="flex:1"><div style="font-family:var(--font-h);font-size:13px">Registration</div></div><div style="font-size:12px;color:var(--text2);text-align:right" id="s-reg">—</div></div>
+      <div class="li" style="border-bottom:none"><div class="lico teal"><i class="ti ti-target"></i></div><div style="flex:1"><div style="font-family:var(--font-h);font-size:13px">Baseline KM/L</div><div style="font-size:10px;color:var(--text3)">ARAI-protocol auto-calculated</div></div><div style="font-size:14px;font-family:var(--font-h);font-weight:700;color:var(--accent)" id="s-baseline">Calibrating…</div></div>
+    </div>
+
+    <!-- AI thresholds -->
+    <div class="slbl">AI ALERT THRESHOLDS</div>
+    <div class="card">
+      <div class="ig">
+        <div class="il">PHASE SEPARATION TRIGGER (% DROP)</div>
+        <input class="ifield" id="t-phase" type="number" value="18">
+        <div style="font-size:10px;color:var(--text3);margin-top:4px">Alert fires when consecutive mileage drop exceeds this %</div>
+      </div>
+      <div class="ig">
+        <div class="il">ADDITIVE SCHEDULE (KM INTERVAL)</div>
+        <input class="ifield" id="t-additive" type="number" value="3000">
+      </div>
+      <div class="ig" style="margin-bottom:0">
+        <div class="il">SPARK PLUG INTERVAL (KM)</div>
+        <input class="ifield" id="t-spark" type="number" value="8500">
+        <div style="font-size:10px;color:var(--text3);margin-top:4px">AI-adjusted below manufacturer spec for E20 carbon deposits</div>
+      </div>
+    </div>
+
+    <!-- Data & privacy -->
+    <div class="slbl">DATA &amp; PRIVACY</div>
+    <div class="card">
+      <div class="li">
+        <div class="lico teal"><i class="ti ti-cloud-upload"></i></div>
+        <div style="flex:1"><div style="font-family:var(--font-h);font-size:13px">Contribute to E20 database</div><div style="font-size:10px;color:var(--text2)">Anonymous Tester ID only — no personal data</div></div>
+        <div style="width:38px;height:20px;background:var(--accent);border-radius:10px;position:relative;cursor:pointer" id="contrib-toggle">
+          <div style="position:absolute;top:3px;right:3px;width:14px;height:14px;background:#000;border-radius:50%"></div>
+        </div>
+      </div>
+      <div class="li" style="border-bottom:none">
+        <div class="lico purple"><i class="ti ti-file-export"></i></div>
+        <div style="flex:1"><div style="font-family:var(--font-h);font-size:13px">Export my data (CSV)</div></div>
+        <button style="background:transparent;border:1px solid var(--border2);border-radius:var(--rsm);padding:5px 10px;color:var(--text2);font-family:var(--font-h);font-size:11px;cursor:pointer" onclick="exportCSV()">EXPORT</button>
+      </div>
+    </div>
+
+    <!-- Reset -->
+    <div class="slbl">BETA</div>
+    <div class="card">
+      <div class="li" style="border-bottom:none">
+        <div class="lico gray"><i class="ti ti-info-circle"></i></div>
+        <div style="flex:1"><div style="font-family:var(--font-h);font-size:13px">App Version</div></div>
+        <span style="font-size:12px;color:var(--text3)">1.0.0-beta</span>
+      </div>
+    </div>
+    <button class="btn btn-danger" onclick="resetApp()" style="margin-top:4px"><i class="ti ti-refresh"></i> RESET APP DATA</button>
+
+    <div style="height:6px"></div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bnav" id="bnav" style="display:none">
+  <div class="ni active" id="nav-dashboard" onclick="goTo('dashboard')"><i class="ti ti-gauge"></i><span>HOME</span></div>
+  <div class="ni" id="nav-refuel" onclick="goTo('refuel')"><i class="ti ti-gas-station"></i><span>REFUEL</span></div>
+  <div class="ni" id="nav-history" onclick="goTo('history')"><i class="ti ti-chart-line"></i><span>ANALYTICS</span></div>
+  <div class="ni" id="nav-settings" onclick="goTo('settings')"><i class="ti ti-user"></i><span>PROFILE</span></div>
+</div>
+
+</div><!-- /phone -->
+
+<!-- ── SAVE CONFIRM MODAL ── -->
+<div class="modal-overlay hidden" id="modal-saved">
+  <div class="modal-box">
+    <div style="text-align:center;margin-bottom:16px">
+      <div style="font-size:40px;color:var(--accent);margin-bottom:10px"><i class="ti ti-circle-check"></i></div>
+      <div class="modal-title">Fill-up Saved!</div>
+      <div style="font-size:13px;color:var(--text2);margin-top:6px" id="modal-msg">Data sent to E-Max AI database.</div>
+    </div>
+    <button class="btn btn-primary" onclick="closeModal()"><i class="ti ti-home"></i> BACK TO DASHBOARD</button>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+//  E-MAX AI — APP STATE & LOGIC
+// ══════════════════════════════════════════════
+
+// ── CONFIG ──
+// Replace these with your actual deployed URLs
+const NETLIFY_FUNCTION_URL = "/.netlify/functions/analyse";
+const SHEET_WEBHOOK_URL    = "https://script.google.com/macros/s/AKfycbxH1u53b_-skIHGyHhYxYGNEKLNiE2ksoDBGYmSb1TiTJE3HP81avpKH2pYr3OGE-yuIg/exec";
+
+// ── STATE ──
+let state = loadState();
+let fullTank = true;
+let currentCalcResult = null;
+
+function loadState() {
+  try {
+    const s = localStorage.getItem("emaxai_state");
+    return s ? JSON.parse(s) : defaultState();
+  } catch(e) { return defaultState(); }
+}
+
+function defaultState() {
+  return {
+    registered: false,
+    testerID: "",
+    testerSeq: 0,
+    name: "",
+    city: "",
+    carMake: "", carModel: "", carYear: "", engineType: "", regNo: "",
+    odometerDay1: 0,
+    lastOdometer: 0,
+    fills: [],          // array of fill objects
+    baselineKml: null,  // locked after 3 fills
+    baselineStatus: "CALIBRATING", // "CALIBRATING" | "LOCKED"
+    thresholds: { phase: 18, additive: 3000, spark: 8500 },
+    cumKm: 0
+  };
+}
+
+function saveState() {
+  localStorage.setItem("emaxai_state", JSON.stringify(state));
+}
+
+// ── SPLASH ──
+setTimeout(() => {
+  const s = document.getElementById("splash");
+  s.style.opacity = "0";
+  setTimeout(() => {
+    s.style.display = "none";
+    document.getElementById("app").style.display = "flex";
+    if (state.registered) {
+      showMainApp();
+    }
+    // else onboarding is already active
+  }, 500);
+}, 2400);
+
+// ── CLOCK ──
+function updateClock() {
+  const n = new Date();
+  const el = document.getElementById("clock");
+  if (el) el.textContent = n.getHours() + ":" + String(n.getMinutes()).padStart(2,"0");
+}
+updateClock(); setInterval(updateClock, 30000);
+
+// ── NAVIGATION ──
+function goTo(screen) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.querySelectorAll(".ni").forEach(n => n.classList.remove("active"));
+  document.getElementById("s-" + screen).classList.add("active");
+  const ni = document.getElementById("nav-" + screen);
+  if (ni) ni.classList.add("active");
+  if (screen === "dashboard") refreshDashboard();
+  if (screen === "history")   refreshHistory();
+  if (screen === "settings")  refreshSettings();
+}
+
+// ── ONBOARDING ──
+let obStep = 1;
+function obNext(step) {
+  for(let i=1;i<=3;i++) {
+    const el = document.getElementById("ob"+i);
+    if(el) el.style.display = i===step ? "block" : "none";
+  }
+  // Update dots
+  const dots = document.getElementById("ob-dots");
+  if(dots) {
+    const ds = dots.children;
+    for(let i=0;i<ds.length;i++){
+      ds[i].style.width = i===(step-1) ? "20px" : "8px";
+      ds[i].style.background = i===(step-1) ? "var(--accent)" : "var(--border2)";
+    }
+  }
+  obStep = step;
+}
+
+function completeOnboarding() {
+  const city    = document.getElementById("ob-city").value;
+  const make    = document.getElementById("ob-make").value;
+  const model   = document.getElementById("ob-model").value.trim();
+  const year    = document.getElementById("ob-year").value;
+  const engine  = document.getElementById("ob-engine").value;
+  const reg     = document.getElementById("ob-reg").value.trim().toUpperCase();
+  const odo     = parseFloat(document.getElementById("ob-odo").value);
+
+  if(!city||!make||!model||!year||!engine||!reg||!odo){
+    alert("Please fill in all vehicle details to continue."); return;
+  }
+
+  // Generate Tester ID
+  const seq = (parseInt(localStorage.getItem("emaxai_seq")||"0") + 1);
+  localStorage.setItem("emaxai_seq", seq);
+  const testerID = "EMAX" + String(seq).padStart(3,"0");
+
+  state = {
+    ...defaultState(),
+    registered: true,
+    testerID, testerSeq: seq,
+    name: document.getElementById("ob-name").value.trim() || "Tester",
+    city, carMake: make, carModel: model, carYear: year,
+    engineType: engine, regNo: reg,
+    odometerDay1: odo, lastOdometer: odo
+  };
+  saveState();
+  showMainApp();
+}
+
+function showMainApp() {
+  document.getElementById("bnav").style.display = "flex";
+  goTo("dashboard");
+}
+
+// ── FULL TANK TOGGLE ──
+function setFullTank(val) {
+  fullTank = val;
+  document.getElementById("ft-yes").className = "toggle-opt" + (val ? " selected" : "");
+  document.getElementById("ft-no").className  = "toggle-opt" + (!val ? " selected" : "");
+}
+
+// ── CALC FILL-UP ──
+function calcFillup() {
+  const odo     = parseFloat(document.getElementById("r-odo").value);
+  const litres  = parseFloat(document.getElementById("r-litres").value);
+  const amount  = parseFloat(document.getElementById("r-amount").value) || 0;
+  const station = document.getElementById("r-station").value.trim();
+  const season  = document.getElementById("r-season").value;
+
+  if(!odo || !litres) { alert("Please enter odometer reading and litres filled."); return; }
+  if(odo <= state.lastOdometer) { alert("Odometer reading must be greater than your last reading (" + state.lastOdometer + " km)."); return; }
+  if(!season) { alert("Please select the current season."); return; }
+
+  const kmTravelled = odo - state.lastOdometer;
+  const kml         = kmTravelled / litres;
+  const costPerKm   = amount ? (amount / kmTravelled) : null;
+  const fillNum     = state.fills.length + 1;
+
+  // During calibration (fills 1–3), no % drop vs baseline
+  let dropPercent = null;
+  let effScore = null;
+  if (state.baselineStatus === "LOCKED" && state.baselineKml) {
+    dropPercent = ((state.baselineKml - kml) / state.baselineKml) * 100;
+    effScore = Math.max(0, Math.min(100, Math.round(100 - (dropPercent * 4))));
+  }
+
+  currentCalcResult = { odo, litres, amount, station, season, kmTravelled, kml, costPerKm, dropPercent, effScore, fullTank, fillNum };
+
+  // Show preview
+  const preview = document.getElementById("ai-preview");
+  preview.style.display = "block";
+  document.getElementById("p-kml").textContent  = kml.toFixed(1);
+  document.getElementById("p-drop").textContent = dropPercent !== null ? (dropPercent >= 0 ? "−" : "+") + Math.abs(dropPercent).toFixed(1) + "%" : "Calibrating";
+  document.getElementById("p-cpm").textContent  = costPerKm ? "₹" + costPerKm.toFixed(1) : "—";
+
+  const pv = document.getElementById("p-verdict");
+  if(state.baselineStatus === "CALIBRATING") {
+    pv.innerHTML = `<span style="color:var(--accent);font-family:var(--font-h)">FILL ${fillNum} OF 3 — CALIBRATING BASELINE</span><br>
+    <span style="color:var(--text2)">Your mileage baseline is being calculated as per standard fuel efficiency testing protocol. <strong style="color:var(--accent)">Reference: ARAI (Automotive Research Association of India)</strong> — India's official vehicle testing body under MoRTH. AI analysis activates after fill-up 3.</span>`;
+  } else {
+    const level = dropPercent < 0 ? "DATA ANOMALY" : dropPercent <= 10 ? "NORMAL" : dropPercent <= 18 ? "WATCH" : "WARNING";
+    const col   = dropPercent <= 10 ? "var(--accent)" : dropPercent <= 18 ? "var(--warn)" : "var(--danger)";
+    pv.innerHTML = `<span style="color:${col};font-family:var(--font-h);font-weight:700">${level}</span> — Drop of ${Math.abs(dropPercent).toFixed(1)}% vs your ARAI-calibrated baseline of ${state.baselineKml.toFixed(1)} km/l.`;
+  }
+
+  document.getElementById("save-btn").style.display = "flex";
+  document.getElementById("ai-result-card").style.display = "none";
+
+  // Call AI if baseline is locked
+  if(state.baselineStatus === "LOCKED") {
+    callAI(currentCalcResult);
+  }
+}
+
+// ── CALL AI ENGINE ──
+async function callAI(r) {
+  document.getElementById("loading-ai").style.display = "flex";
+  document.getElementById("ai-result-card").style.display = "none";
+
+  const payload = {
+    testerID:   state.testerID,
+    carMake:    state.carMake,
+    carModel:   state.carModel,
+    carYear:    state.carYear,
+    engineType: state.engineType,
+    city:       state.city,
+    kml:        r.kml,
+    dropPercent: r.dropPercent || 0,
+    costPerKm:  r.costPerKm || 0,
+    litresFilled: r.litres,
+    fullTank:   r.fullTank,
+    season:     r.season,
+    fillCount:  r.fillNum,
+    baselineStatus: state.baselineStatus,
+    baselineKml: state.baselineKml
+  };
+
+  try {
+    const res = await fetch(NETLIFY_FUNCTION_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if(data.success && data.ai) {
+      const ai = data.ai;
+      document.getElementById("loading-ai").style.display = "none";
+      document.getElementById("ai-result-card").style.display = "block";
+      document.getElementById("ai-verdict-text").textContent = ai.verdict;
+      document.getElementById("ai-tip-text").textContent = ai.coachingTip;
+
+      const alertBadge  = document.getElementById("ai-alert-badge");
+      const anomBadge   = document.getElementById("ai-anomaly-badge");
+      alertBadge.textContent = ai.alertLevel;
+      anomBadge.textContent  = ai.anomalyFlag;
+
+      const alertClass = {NORMAL:"bg-green",WATCH:"bg-blue",WARNING:"bg-warn",CRITICAL:"bg-danger",INFO:"bg-gray"}[ai.alertLevel] || "bg-gray";
+      alertBadge.className = "badge " + alertClass;
+      anomBadge.className  = ai.anomalyFlag !== "NONE" ? "badge bg-warn" : "badge bg-gray";
+
+      currentCalcResult.ai = ai;
+    }
+  } catch(e) {
+    document.getElementById("loading-ai").style.display = "none";
+    // fallback — no AI verdict, still allow save
+    currentCalcResult.ai = { alertLevel:"INFO", verdict:"AI analysis pending — fill-up saved.", anomalyFlag:"NONE", coachingTip:"Maintain steady throttle on city roads to maximise E20 efficiency." };
+    document.getElementById("ai-result-card").style.display = "block";
+    document.getElementById("ai-verdict-text").textContent = currentCalcResult.ai.verdict;
+    document.getElementById("ai-tip-text").textContent     = currentCalcResult.ai.coachingTip;
+  }
+}
+
+// ── SAVE FILL-UP ──
+async function saveFillup() {
+  if(!currentCalcResult) return;
+  const r = currentCalcResult;
+
+  // Build fill record
+  const fill = {
+    ts:         new Date().toISOString(),
+    fillNum:    r.fillNum,
+    odo:        r.odo,
+    litres:     r.litres,
+    amount:     r.amount,
+    station:    r.station,
+    season:     r.season,
+    fullTank:   r.fullTank,
+    kmTravelled:r.kmTravelled,
+    kml:        r.kml,
+    costPerKm:  r.costPerKm,
+    dropPercent:r.dropPercent,
+    effScore:   r.effScore,
+    ai:         r.ai || null
+  };
+
+  state.fills.push(fill);
+  state.lastOdometer = r.odo;
+  state.cumKm = (state.cumKm || 0) + r.kmTravelled;
+
+  // Check if we just completed calibration (fill 3)
+  if(state.baselineStatus === "CALIBRATING" && state.fills.length >= 3) {
+    const calFills = state.fills.slice(0,3).filter(f => f.fullTank);
+    if(calFills.length >= 3) {
+      const avgKml = calFills.reduce((s,f) => s + f.kml, 0) / calFills.length;
+      state.baselineKml   = avgKml;
+      state.baselineStatus = "LOCKED";
+    }
+  }
+  saveState();
+
+  // Post to Google Sheet
+  await postToSheet(fill);
+
+  // Show modal
+  const msg = state.baselineStatus === "LOCKED" && fill.fillNum === 3
+    ? `Baseline locked at ${state.baselineKml.toFixed(1)} km/l (ARAI protocol). AI analysis now active!`
+    : `Fill-up #${fill.fillNum} saved. Data sent to master sheet.`;
+  document.getElementById("modal-msg").textContent = msg;
+  document.getElementById("modal-saved").classList.remove("hidden");
+
+  // Reset form
+  ["r-odo","r-litres","r-amount","r-station","r-season"].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.value = "";
+  });
+  document.getElementById("ai-preview").style.display = "none";
+  document.getElementById("save-btn").style.display = "none";
+  currentCalcResult = null;
+  setFullTank(true);
+}
+
+// ── POST TO GOOGLE SHEET ──
+async function postToSheet(fill) {
+  if(!SHEET_WEBHOOK_URL || SHEET_WEBHOOK_URL === "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL") return;
+  try {
+    const payload = {
+      testerID:    state.testerID,
+      city:        state.city,
+      fillCount:   fill.fillNum,
+      carMake:     state.carMake,
+      carModel:    state.carModel,
+      carYear:     state.carYear,
+      regNo:       state.regNo,
+      engineType:  state.engineType,
+      odometerNow: fill.odo,
+      litresFilled:fill.litres,
+      amountPaid:  fill.amount,
+      fullTank:    fill.fullTank,
+      fuelStation: fill.station,
+      season:      fill.season,
+      kmTravelled: fill.kmTravelled,
+      kml:         fill.kml,
+      dropPercent: fill.dropPercent || 0,
+      costPerKm:   fill.costPerKm || 0,
+      efficiencyScore: fill.effScore || 0,
+      baselineStatus:  state.baselineStatus,
+      baselineKml:     state.baselineKml || 0,
+      ai: fill.ai || {}
+    };
+    await fetch(SHEET_WEBHOOK_URL, {
+      method: "POST",
+      mode:   "no-cors",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify(payload)
+    });
+  } catch(e) { /* silent fail — data is saved locally */ }
+}
+
+// ── MODAL ──
+function closeModal() {
+  document.getElementById("modal-saved").classList.add("hidden");
+  goTo("dashboard");
+}
+
+// ── REFRESH DASHBOARD ──
+function refreshDashboard() {
+  document.getElementById("dash-vehicle").textContent =
+    state.registered ? `${state.carMake} ${state.carModel} · ${state.regNo}` : "—";
+
+  const fills = state.fills;
+  const latest = fills.length > 0 ? fills[fills.length-1] : null;
+
+  // Calibration tracker
+  const calTracker = document.getElementById("cal-tracker");
+  const calBanner  = document.getElementById("cal-banner");
+  const verdictCard = document.getElementById("verdict-card");
+
+  if(state.baselineStatus === "LOCKED") {
+    calTracker.style.display = "none";
+    calBanner.style.display  = "none";
+    verdictCard.style.display = latest && latest.ai ? "block" : "none";
+    if(latest && latest.ai) {
+      document.getElementById("verdict-text").textContent = latest.ai.verdict;
+      const ab = document.getElementById("v-alert");
+      const an = document.getElementById("v-anomaly");
+      ab.textContent = latest.ai.alertLevel;
+      an.textContent = latest.ai.anomalyFlag;
+      const ac = {NORMAL:"bg-green",WATCH:"bg-blue",WARNING:"bg-warn",CRITICAL:"bg-danger",INFO:"bg-gray"}[latest.ai.alertLevel]||"bg-gray";
+      ab.className = "badge " + ac;
+      an.className = latest.ai.anomalyFlag !== "NONE" ? "badge bg-warn" : "badge bg-gray";
+      document.getElementById("ai-coach-tip").style.display = "flex";
+      document.getElementById("ai-coach-body").textContent  = latest.ai.coachingTip;
+    }
+  } else {
+    calTracker.style.display = "block";
+    verdictCard.style.display = "none";
+    // Update cal steps
+    for(let i=1;i<=3;i++) {
+      const dot = document.getElementById("cs" + i);
+      const fi  = fills[i-1];
+      if(fi) {
+        dot.className = "cal-dot done";
+        dot.innerHTML = "<i class='ti ti-check' style='font-size:13px'></i>";
+        dot.nextElementSibling.children[1].textContent = fi.kml.toFixed(1) + " km/l · " + new Date(fi.ts).toLocaleDateString("en-IN",{day:"2-digit",month:"short"});
+      } else {
+        dot.className = "cal-dot pending";
+        dot.textContent = i;
+      }
+    }
+    const pct = Math.round((fills.length / 3) * 100);
+    document.getElementById("cal-pbar").style.width = pct + "%";
+    document.getElementById("cal-title").textContent = fills.length > 0 ? `CALIBRATION: FILL ${fills.length} OF 3 COMPLETE` : "BASELINE CALIBRATION IN PROGRESS";
+  }
+
+  // Metrics
+  if(latest) {
+    document.getElementById("d-kml").textContent  = latest.kml.toFixed(1);
+    document.getElementById("d-drop").textContent = latest.dropPercent != null ? (latest.dropPercent >= 0 ? "−" : "+") + Math.abs(latest.dropPercent).toFixed(1) + "%" : "—";
+    document.getElementById("d-cpm").textContent  = latest.costPerKm ? "₹" + latest.costPerKm.toFixed(1) : "—";
+
+    const eff = latest.effScore || 0;
+    document.getElementById("eff-num").textContent = eff > 0 ? eff : "—";
+    // Arc offset: 251 = full arc, 0 = empty. offset = 251 - (eff/100 * 251)
+    document.getElementById("arc-fill").style.strokeDashoffset = Math.round(251 - (eff / 100 * 251));
+  }
+
+  // Service countdowns
+  const cum = state.cumKm || 0;
+  const addKm   = Math.max(0, (state.thresholds.additive||3000) - (cum % (state.thresholds.additive||3000)));
+  const sparkKm = Math.max(0, (state.thresholds.spark||8500) - cum);
+  const airKm   = Math.max(0, 5000 - (cum % 5000));
+  document.getElementById("svc-add").textContent   = addKm > 0 ? addKm.toLocaleString("en-IN") + " km" : "DUE NOW";
+  document.getElementById("svc-spark").textContent = sparkKm > 0 ? sparkKm.toLocaleString("en-IN") + " km" : "DUE NOW";
+  document.getElementById("svc-air").textContent   = airKm > 0 ? airKm.toLocaleString("en-IN") + " km" : "DUE NOW";
+}
+
+// ── REFRESH HISTORY ──
+function refreshHistory() {
+  const fills = state.fills;
+  document.getElementById("h-fills").textContent = fills.length;
+
+  if(fills.length === 0) return;
+
+  const avgKml = fills.reduce((s,f) => s+f.kml, 0) / fills.length;
+  document.getElementById("h-avg").textContent = avgKml.toFixed(1);
+
+  const withDrop = fills.filter(f => f.dropPercent != null);
+  if(withDrop.length > 0) {
+    const avgDrop = withDrop.reduce((s,f) => s+f.dropPercent, 0) / withDrop.length;
+    document.getElementById("h-drop").textContent = (avgDrop >= 0 ? "−" : "+") + Math.abs(avgDrop).toFixed(1) + "%";
+  }
+
+  // Draw trend chart
+  if(fills.length >= 2) drawTrendChart(fills);
+
+  // Fill-up log
+  const log = document.getElementById("fill-log");
+  log.innerHTML = [...fills].reverse().map(f => {
+    const col = f.dropPercent == null ? "var(--text2)" : f.dropPercent <= 10 ? "var(--accent)" : f.dropPercent <= 18 ? "var(--warn)" : "var(--danger)";
+    const dt  = new Date(f.ts).toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"});
+    const aiLevel = f.ai ? f.ai.alertLevel : (f.fillNum <= 3 ? "CAL" : "—");
+    return `<div class="trow">
+      <div>
+        <div style="font-family:var(--font-h);font-size:13px;font-weight:600">Fill #${f.fillNum} · ${f.litres}L · ${dt}</div>
+        <div style="font-size:11px;color:var(--text2)">${f.station||"—"} · ${f.season||"—"} · ${f.fullTank?"Full":"Partial"}</div>
+        <div style="margin-top:3px"><span class="badge bg-gray" style="font-size:9px">${aiLevel}</span></div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-family:var(--font-h);font-size:18px;font-weight:700;color:${col}">${f.kml.toFixed(1)}</div>
+        <div style="font-size:9px;color:var(--text3)">KM/L</div>
+        ${f.costPerKm ? `<div style="font-size:11px;color:var(--text2)">₹${f.costPerKm.toFixed(1)}/km</div>` : ""}
+      </div>
+    </div>`;
+  }).join("");
+}
+
+// ── TREND CHART ──
+function drawTrendChart(fills) {
+  const svg   = document.getElementById("trend-svg");
+  const kmls  = fills.map(f => f.kml);
+  const minV  = Math.min(...kmls) - 1;
+  const maxV  = Math.max(...kmls) + 1;
+  const W = 300, H = 80, pad = 20;
+  const xStep = (W - pad*2) / (fills.length - 1);
+  const yScale = (val) => pad + ((maxV - val) / (maxV - minV)) * (H - pad*2);
+  const points = fills.map((f,i) => `${pad + i*xStep},${yScale(f.kml)}`).join(" ");
+
+  const baselineY = state.baselineKml ? yScale(state.baselineKml) : null;
+  const baselineLine = baselineY ? `<line x1="${pad}" y1="${baselineY}" x2="${W-pad}" y2="${baselineY}" stroke="#3a4255" stroke-width="1" stroke-dasharray="4 3"/>
+    <text x="${W-pad+2}" y="${baselineY+4}" font-family="DM Sans" font-size="8" fill="#4e5a6e">BASE</text>` : "";
+
+  const dots = fills.map((f,i) => {
+    const col = f.dropPercent == null ? "#8892a4" : f.dropPercent <= 10 ? "#00d4aa" : f.dropPercent <= 18 ? "#f59e0b" : "#ef4444";
+    return `<circle cx="${pad + i*xStep}" cy="${yScale(f.kml)}" r="3.5" fill="${col}"/>`;
+  }).join("");
+
+  svg.innerHTML = `
+    <line x1="${pad}" y1="${pad}" x2="${pad}" y2="${H-pad+4}" stroke="#2a3040" stroke-width="0.5"/>
+    <line x1="${pad}" y1="${H-pad+4}" x2="${W-pad}" y2="${H-pad+4}" stroke="#2a3040" stroke-width="0.5"/>
+    ${baselineLine}
+    <polyline points="${points}" fill="none" stroke="#00d4aa" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    ${dots}
+    <text x="${pad}" y="${H-pad+14}" font-family="DM Sans" font-size="8" fill="#4e5a6e">Fill 1</text>
+    <text x="${W-pad}" y="${H-pad+14}" font-family="DM Sans" font-size="8" fill="#4e5a6e" text-anchor="end">Fill ${fills.length}</text>`;
+}
+
+// ── REFRESH SETTINGS ──
+function refreshSettings() {
+  document.getElementById("s-testerid").textContent = state.testerID || "—";
+  document.getElementById("s-city").textContent     = state.city || "—";
+  document.getElementById("s-makemodel").textContent = `${state.carMake} ${state.carModel}`;
+  document.getElementById("s-yeareng").textContent  = `${state.carYear} · ${state.engineType}`;
+  document.getElementById("s-reg").textContent      = state.regNo || "—";
+  document.getElementById("s-baseline").textContent = state.baselineStatus === "LOCKED"
+    ? state.baselineKml.toFixed(1) + " km/l ✓"
+    : "Calibrating (" + state.fills.length + "/3)";
+  document.getElementById("t-phase").value    = state.thresholds.phase    || 18;
+  document.getElementById("t-additive").value = state.thresholds.additive || 3000;
+  document.getElementById("t-spark").value    = state.thresholds.spark    || 8500;
+}
+
+// ── EXPORT CSV ──
+function exportCSV() {
+  if(state.fills.length === 0) { alert("No fill-ups to export yet."); return; }
+  const header = "TesterID,City,FillNo,CarMake,CarModel,Year,RegNo,Engine,OdometerKM,LitresFilled,AmountRs,FullTank,Station,Season,KMTravelled,KML,DropPct,CostPerKM,EffScore,BaselineStatus,BaselineKML,AlertLevel,Verdict,AnomalyFlag,CoachingTip,Timestamp\n";
+  const rows = state.fills.map(f =>
+    [state.testerID,state.city,f.fillNum,state.carMake,state.carModel,state.carYear,state.regNo,state.engineType,
+     f.odo,f.litres,f.amount,f.fullTank?"Y":"N",f.station,f.season,
+     f.kmTravelled?.toFixed(1),f.kml?.toFixed(2),f.dropPercent?.toFixed(1)||"",f.costPerKm?.toFixed(2)||"",f.effScore||"",
+     state.baselineStatus,state.baselineKml?.toFixed(2)||"",
+     f.ai?.alertLevel||"",f.ai?.verdict?.replace(/,/g,";")||"",f.ai?.anomalyFlag||"",f.ai?.coachingTip?.replace(/,/g,";")||"",
+     new Date(f.ts).toLocaleString("en-IN")
+    ].join(",")
+  ).join("\n");
+
+  const blob = new Blob([header+rows], {type:"text/csv"});
+  const a    = document.createElement("a");
+  a.href     = URL.createObjectURL(blob);
+  a.download = `emaxai_${state.testerID}_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+}
+
+// ── RESET ──
+function resetApp() {
+  if(confirm("Reset all app data? This cannot be undone.")) {
+    localStorage.clear();
+    location.reload();
+  }
+}
+
+// ── SERVICE WORKER REGISTRATION ──
+if("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/sw.js").catch(() => {});
+  });
+}
+</script>
+</body>
+</html>

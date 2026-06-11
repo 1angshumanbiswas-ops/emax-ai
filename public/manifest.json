@@ -1,0 +1,16 @@
+{
+  "name": "E-Max AI — Mileage Optimizer",
+  "short_name": "E·MAX AI",
+  "description": "Track your car's E20 ethanol mileage drop. AI-powered. ARAI protocol.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0c0f",
+  "theme_color": "#00d4aa",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "categories": ["utilities", "automotive"],
+  "lang": "en-IN"
+}
