@@ -51,7 +51,7 @@ body{font-family:var(--font-b);font-size:14px;color:var(--text);display:flex;jus
 .sbar{display:flex;justify-content:space-between;align-items:center;padding:10px 18px 4px;font-size:11px;color:var(--text3);flex-shrink:0;}
 .sbar-mid{font-family:var(--font-h);font-size:11px;color:var(--accent);letter-spacing:.08em;}
 
-/* ── ARAI BADGE — persistent on every screen ── */
+/* ── METHODOLOGY BADGE — persistent on every screen ── */
 .arai-badge{
   background:rgba(0,212,170,.05);
   border-top:1px solid rgba(0,212,170,.12);
@@ -63,6 +63,7 @@ body{font-family:var(--font-b);font-size:14px;color:var(--text);display:flex;jus
 .arai-badge i{color:var(--accent);font-size:13px;flex-shrink:0;}
 .arai-badge-text{font-size:10px;color:var(--text2);line-height:1.45;}
 .arai-badge-text strong{color:var(--accent);font-weight:600;display:block;font-family:var(--font-h);font-size:11px;letter-spacing:.04em;}
+.disclaimer{font-size:10px;color:var(--text3);line-height:1.5;font-style:italic;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);}
 
 /* ── SCROLL AREA ── */
 .scroll{flex:1;overflow-y:auto;padding:10px 14px 16px;-webkit-overflow-scrolling:touch;}
@@ -223,7 +224,7 @@ select.ifield option{background:var(--bg3);color:var(--text);}
   <div style="font-family:var(--font-h);font-size:42px;font-weight:700;color:var(--accent);letter-spacing:.1em">E·MAX AI</div>
   <div style="font-size:11px;color:var(--text3);letter-spacing:.18em;margin-top:4px">MILEAGE OPTIMIZER · E20 READY</div>
   <div style="margin-top:10px;font-size:10px;color:rgba(0,212,170,.5);text-align:center;padding:0 40px;line-height:1.5">
-    <strong style="color:var(--accent)">Calibrated as per ARAI testing protocol</strong><br>Automotive Research Association of India · MoRTH
+    <strong style="color:var(--accent)">Tank-to-Tank Method</strong><br>Standard real-world fuel efficiency measurement
   </div>
   <div style="margin-top:32px;color:var(--text3);font-size:12px;display:flex;align-items:center;gap:8px">
     <i class="ti ti-loader-2 spin" style="font-size:14px;color:var(--accent)"></i> Initialising
@@ -242,12 +243,12 @@ select.ifield option{background:var(--bg3);color:var(--text);}
   </div>
 </div>
 
-<!-- ARAI TRUST BADGE — every screen -->
+<!-- METHODOLOGY TRUST BADGE — every screen -->
 <div class="arai-badge">
   <i class="ti ti-shield-check"></i>
   <div class="arai-badge-text">
-    <strong>ARAI STANDARD · MORTH INDIA</strong>
-    Mileage baseline calculated as per Automotive Research Association of India fuel efficiency testing protocol — India's official vehicle testing body under the Ministry of Road Transport &amp; Highways.
+    <strong>TANK-TO-TANK METHOD</strong>
+    Mileage is calculated using the Tank-to-Tank Method — the standard real-world fuel efficiency formula (distance ÷ fuel consumed) used by automotive researchers across India. This is an independent beta tool, not an ARAI/MoRTH certified product.
   </div>
 </div>
 
@@ -274,7 +275,7 @@ select.ifield option{background:var(--bg3);color:var(--text);}
         </div>
         <div style="margin-top:14px;padding:10px 14px;background:rgba(0,212,170,.05);border:1px solid rgba(0,212,170,.15);border-radius:var(--rsm);font-size:11px;color:var(--text2);line-height:1.5;text-align:left">
           <strong style="color:var(--accent);font-family:var(--font-h)">HOW BASELINE WORKS</strong><br>
-          Your E0 mileage baseline is auto-calculated from your first 3 fill-ups using ARAI-standard protocol — no guesswork, no self-reporting. AI analysis activates from fill-up 4.
+          Your personal mileage baseline is auto-calculated from your first 3 fill-ups using the Tank-to-Tank Method — no guesswork, no self-reporting. This reflects YOUR car's recent average, not a pre-E20 comparison. AI analysis activates from fill-up 4.
         </div>
       </div>
       <button class="btn btn-primary" onclick="obNext(2)"><i class="ti ti-arrow-right"></i> GET STARTED</button>
@@ -343,8 +344,8 @@ select.ifield option{background:var(--bg3);color:var(--text);}
         </div>
       </div>
       <div class="ig">
-        <div class="il">REGISTRATION NUMBER</div>
-        <input class="ifield" id="ob-reg" type="text" placeholder="e.g. MH12 AX 4421" style="text-transform:uppercase">
+        <div class="il">REGISTRATION NUMBER (OPTIONAL — STORED ON YOUR PHONE ONLY)</div>
+        <input class="ifield" id="ob-reg" type="text" placeholder="e.g. MH12 AX 4421 (optional)" style="text-transform:uppercase">
       </div>
       <div class="ig">
         <div class="il">CURRENT ODOMETER READING (KM) — TODAY</div>
@@ -408,7 +409,7 @@ select.ifield option{background:var(--bg3);color:var(--text);}
 
     <!-- Calibration tracker (shown during first 3 fills) -->
     <div class="card" id="cal-tracker">
-      <div class="slbl" style="margin-top:0">BASELINE CALIBRATION — ARAI PROTOCOL</div>
+      <div class="slbl" style="margin-top:0">BASELINE CALIBRATION — TANK-TO-TANK METHOD</div>
       <div id="cal-steps">
         <div class="cal-step"><div class="cal-dot pending" id="cs1">1</div><div><div style="font-family:var(--font-h);font-size:13px">Fill-up 1 of 3</div><div style="font-size:11px;color:var(--text3)">Not logged yet</div></div></div>
         <div class="cal-step"><div class="cal-dot pending" id="cs2">2</div><div><div style="font-family:var(--font-h);font-size:13px">Fill-up 2 of 3</div><div style="font-size:11px;color:var(--text3)">Not logged yet</div></div></div>
@@ -425,6 +426,7 @@ select.ifield option{background:var(--bg3);color:var(--text);}
         <span class="badge bg-gray" id="v-alert">—</span>
         <span class="badge bg-gray" id="v-anomaly">—</span>
       </div>
+      <div class="disclaimer">⚠️ AI-generated observation based on your own data trend — informational only, not a diagnostic or OEM/ARAI/MoRTH-validated assessment. For mechanical concerns, consult an authorised service centre.</div>
     </div>
 
     <!-- Coaching tips -->
@@ -462,6 +464,7 @@ select.ifield option{background:var(--bg3);color:var(--text);}
         <div style="flex:1"><div style="font-family:var(--font-h);font-size:13px;font-weight:600">Air Filter</div><div style="font-size:11px;color:var(--text2)">E20 carbon deposit adjusted</div></div>
         <div style="text-align:right"><div style="font-family:var(--font-h);font-size:14px;color:var(--blue)" id="svc-air">— km</div><div style="font-size:9px;color:var(--text3)">REMAINING</div></div>
       </div>
+      <div class="disclaimer">⚠️ These intervals are general informational estimates only — not OEM, ARAI, or MoRTH validated. Always follow your vehicle manufacturer's manual and consult an authorised service centre before any maintenance action.</div>
     </div>
 
     <div style="height:6px"></div>
@@ -546,6 +549,7 @@ select.ifield option{background:var(--bg3);color:var(--text);}
           <i class="ti ti-bulb"></i>
           <div><div class="ctip-title">COACHING TIP</div><div class="ctip-body" id="ai-tip-text">—</div></div>
         </div>
+        <div class="disclaimer">⚠️ Informational only — not OEM/ARAI/MoRTH validated. Consult an authorised service centre for mechanical decisions.</div>
       </div>
     </div>
 
@@ -616,7 +620,7 @@ select.ifield option{background:var(--bg3);color:var(--text);}
       <div class="li"><div class="lico gray"><i class="ti ti-car"></i></div><div style="flex:1"><div style="font-family:var(--font-h);font-size:13px">Make &amp; Model</div></div><div style="font-size:12px;color:var(--text2);text-align:right" id="s-makemodel">—</div></div>
       <div class="li"><div class="lico gray"><i class="ti ti-calendar"></i></div><div style="flex:1"><div style="font-family:var(--font-h);font-size:13px">Year &amp; Engine</div></div><div style="font-size:12px;color:var(--text2);text-align:right" id="s-yeareng">—</div></div>
       <div class="li"><div class="lico gray"><i class="ti ti-id-badge-2"></i></div><div style="flex:1"><div style="font-family:var(--font-h);font-size:13px">Registration</div></div><div style="font-size:12px;color:var(--text2);text-align:right" id="s-reg">—</div></div>
-      <div class="li" style="border-bottom:none"><div class="lico teal"><i class="ti ti-target"></i></div><div style="flex:1"><div style="font-family:var(--font-h);font-size:13px">Baseline KM/L</div><div style="font-size:10px;color:var(--text3)">ARAI-protocol auto-calculated</div></div><div style="font-size:14px;font-family:var(--font-h);font-weight:700;color:var(--accent)" id="s-baseline">Calibrating…</div></div>
+      <div class="li" style="border-bottom:none"><div class="lico teal"><i class="ti ti-target"></i></div><div style="flex:1"><div style="font-family:var(--font-h);font-size:13px">Baseline KM/L</div><div style="font-size:10px;color:var(--text3)">Your personal avg · Tank-to-Tank Method</div></div><div style="font-size:14px;font-family:var(--font-h);font-weight:700;color:var(--accent)" id="s-baseline">Calibrating…</div></div>
     </div>
 
     <!-- AI thresholds -->
@@ -700,7 +704,7 @@ select.ifield option{background:var(--bg3);color:var(--text);}
 // ── CONFIG ──
 // Replace these with your actual deployed URLs
 const NETLIFY_FUNCTION_URL = "/.netlify/functions/analyse";
-const SHEET_WEBHOOK_URL    = "https://script.google.com/macros/s/AKfycbxH1u53b_-skIHGyHhYxYGNEKLNiE2ksoDBGYmSb1TiTJE3HP81avpKH2pYr3OGE-yuIg/exec";
+const SHEET_WEBHOOK_URL    = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL";
 
 // ── STATE ──
 let state = loadState();
@@ -798,8 +802,8 @@ function completeOnboarding() {
   const reg     = document.getElementById("ob-reg").value.trim().toUpperCase();
   const odo     = parseFloat(document.getElementById("ob-odo").value);
 
-  if(!city||!make||!model||!year||!engine||!reg||!odo){
-    alert("Please fill in all vehicle details to continue."); return;
+  if(!city||!make||!model||!year||!engine||!odo){
+    alert("Please fill in all required vehicle details to continue."); return;
   }
 
   // Generate Tester ID
@@ -869,11 +873,11 @@ function calcFillup() {
   const pv = document.getElementById("p-verdict");
   if(state.baselineStatus === "CALIBRATING") {
     pv.innerHTML = `<span style="color:var(--accent);font-family:var(--font-h)">FILL ${fillNum} OF 3 — CALIBRATING BASELINE</span><br>
-    <span style="color:var(--text2)">Your mileage baseline is being calculated as per standard fuel efficiency testing protocol. <strong style="color:var(--accent)">Reference: ARAI (Automotive Research Association of India)</strong> — India's official vehicle testing body under MoRTH. AI analysis activates after fill-up 3.</span>`;
+    <span style="color:var(--text2)">Your personal mileage baseline is being calculated using the <strong style="color:var(--accent)">Tank-to-Tank Method</strong> (distance ÷ fuel) — the standard real-world fuel efficiency formula. This reflects your car's recent E20 average, not a pre-E20 comparison. AI analysis activates after fill-up 3.</span>`;
   } else {
     const level = dropPercent < 0 ? "DATA ANOMALY" : dropPercent <= 10 ? "NORMAL" : dropPercent <= 18 ? "WATCH" : "WARNING";
     const col   = dropPercent <= 10 ? "var(--accent)" : dropPercent <= 18 ? "var(--warn)" : "var(--danger)";
-    pv.innerHTML = `<span style="color:${col};font-family:var(--font-h);font-weight:700">${level}</span> — Drop of ${Math.abs(dropPercent).toFixed(1)}% vs your ARAI-calibrated baseline of ${state.baselineKml.toFixed(1)} km/l.`;
+    pv.innerHTML = `<span style="color:${col};font-family:var(--font-h);font-weight:700">${level}</span> — Drop of ${Math.abs(dropPercent).toFixed(1)}% vs your personal baseline of ${state.baselineKml.toFixed(1)} km/l (Tank-to-Tank Method).`;
   }
 
   document.getElementById("save-btn").style.display = "flex";
@@ -986,7 +990,7 @@ async function saveFillup() {
 
   // Show modal
   const msg = state.baselineStatus === "LOCKED" && fill.fillNum === 3
-    ? `Baseline locked at ${state.baselineKml.toFixed(1)} km/l (ARAI protocol). AI analysis now active!`
+    ? `Baseline locked at ${state.baselineKml.toFixed(1)} km/l (Tank-to-Tank Method). AI analysis now active!`
     : `Fill-up #${fill.fillNum} saved. Data sent to master sheet.`;
   document.getElementById("modal-msg").textContent = msg;
   document.getElementById("modal-saved").classList.remove("hidden");
@@ -1013,7 +1017,6 @@ async function postToSheet(fill) {
       carMake:     state.carMake,
       carModel:    state.carModel,
       carYear:     state.carYear,
-      regNo:       state.regNo,
       engineType:  state.engineType,
       odometerNow: fill.odo,
       litresFilled:fill.litres,
