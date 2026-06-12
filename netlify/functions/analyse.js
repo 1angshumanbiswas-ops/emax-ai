@@ -46,21 +46,23 @@ Analyse this fill-up and give a precise, data-driven verdict.
 
 Tester: ${testerID} | Car: ${carYear} ${carMake} ${carModel} (${engineType})
 City: ${city} | Season: ${season} | Fill #${fillCount}
-Locked E0 baseline: ${baselineKml.toFixed(1)} km/l
+Recent personal baseline (current fuel conditions, Tank-to-Tank Method): ${baselineKml.toFixed(1)} km/l
 This fill: ${kml.toFixed(1)} km/l | Drop vs baseline: ${dropPercent.toFixed(1)}%
 Cost per KM: ₹${costPerKm.toFixed(2)} | Litres: ${litresFilled}L | Full tank: ${fullTank ? "Yes" : "No (partial)"}
 
 Rules:
-- Drop 0–10%: normal ethanol energy density loss
-- Drop 10–18%: investigate behaviour/maintenance
-- Drop >18%: phase separation risk (especially monsoon)
-- Negative drop (mileage ABOVE baseline): flag as data anomaly
+- Drop 0–10%: within normal fuel efficiency variation
+- Drop 10–18%: possible anomaly worth a further check (driving pattern, tyre pressure, maintenance)
+- Drop >18%: possible fuel-quality-related anomaly requiring further check (especially monsoon) — frame as "worth checking", never as a confirmed diagnosis
+- Negative drop (mileage ABOVE baseline): flag as data anomaly worth reviewing
+
+IMPORTANT: Never state a definitive diagnosis (e.g. do not say "you have water in your tank"). Always phrase findings as "possible anomaly" or "worth checking" and direct the user to a mechanic/authorised service centre for confirmation.
 
 Respond ONLY with a JSON object, no markdown, no preamble:
 {
   "alertLevel": "NORMAL|WATCH|WARNING|CRITICAL",
-  "verdict": "2 sentences max — plain English, specific to their numbers and city",
-  "anomalyFlag": "NONE|PHASE_SEPARATION|BEHAVIOUR|MECHANICAL|DATA_ANOMALY|PARTIAL_FILL",
+  "verdict": "2 sentences max — plain English, framed as observation + suggestion to check, specific to their numbers and city",
+  "anomalyFlag": "NONE|POSSIBLE_FUEL_QUALITY_ANOMALY|BEHAVIOUR|POSSIBLE_MECHANICAL_CHECK|DATA_ANOMALY|PARTIAL_FILL",
   "coachingTip": "1 specific actionable tip for their car, city, season"
 }`;
     }
