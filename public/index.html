@@ -382,7 +382,7 @@ select.ifield option{background:var(--bg3);color:var(--text);}
       <i class="ti ti-adjustments"></i>
       <div>
         <div class="abanner-title" id="cal-title">BASELINE CALIBRATION IN PROGRESS</div>
-        <div class="abanner-body" id="cal-body">Log your first 3 full-tank fill-ups to establish your personal E0 baseline. AI analysis activates after fill-up 3.</div>
+        <div class="abanner-body" id="cal-body">Log your first 3 full-tank fill-ups to establish your recent personal baseline (current fuel conditions, Tank-to-Tank Method). AI analysis activates after fill-up 3.</div>
       </div>
     </div>
 
@@ -632,9 +632,9 @@ select.ifield option{background:var(--bg3);color:var(--text);}
     <div class="slbl">AI ALERT THRESHOLDS</div>
     <div class="card">
       <div class="ig">
-        <div class="il">PHASE SEPARATION TRIGGER (% DROP)</div>
+        <div class="il">FUEL-QUALITY ANOMALY CHECK THRESHOLD (% DROP)</div>
         <input class="ifield" id="t-phase" type="number" value="18">
-        <div style="font-size:10px;color:var(--text3);margin-top:4px">Alert fires when consecutive mileage drop exceeds this %</div>
+        <div style="font-size:10px;color:var(--text3);margin-top:4px">Flags a "possible anomaly — worth checking" when consecutive mileage drop exceeds this %. Not a diagnosis.</div>
       </div>
       <div class="ig">
         <div class="il">ADDITIVE SCHEDULE (KM INTERVAL)</div>
