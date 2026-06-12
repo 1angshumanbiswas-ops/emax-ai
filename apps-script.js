@@ -22,7 +22,7 @@ function doPost(e) {
         // Identity
         "Tester ID", "City", "Fill #",
         // Vehicle
-        "Car Make", "Car Model", "Year", "Reg No", "Engine Type",
+        "Car Make", "Car Model", "Year", "Engine Type",
         // User inputs per fill
         "Odometer (KM)", "Litres Filled", "Amount Paid (₹)",
         "Full Tank", "Fuel Station", "Season",
@@ -48,10 +48,10 @@ function doPost(e) {
       // Set column widths
       sheet.setColumnWidth(1, 90);   // Tester ID
       sheet.setColumnWidth(2, 110);  // City
-      sheet.setColumnWidth(22, 80);  // Alert Level
-      sheet.setColumnWidth(23, 300); // AI Verdict
-      sheet.setColumnWidth(24, 120); // Anomaly Flag
-      sheet.setColumnWidth(25, 300); // Coaching Tip
+      sheet.setColumnWidth(21, 80);  // Alert Level
+      sheet.setColumnWidth(22, 300); // AI Verdict
+      sheet.setColumnWidth(23, 120); // Anomaly Flag
+      sheet.setColumnWidth(24, 300); // Coaching Tip
     }
 
     const ai = data.ai || {};
@@ -66,7 +66,6 @@ function doPost(e) {
       data.carMake || "",
       data.carModel || "",
       data.carYear || "",
-      data.regNo || "",
       data.engineType || "",
       data.odometerNow || "",
       data.litresFilled || "",
@@ -91,7 +90,7 @@ function doPost(e) {
 
     // Colour-code the alert level cell
     const lastRow = sheet.getLastRow();
-    const alertCell = sheet.getRange(lastRow, 22);
+    const alertCell = sheet.getRange(lastRow, 21);
     const alertLevel = ai.alertLevel || "";
     if (alertLevel === "CRITICAL") alertCell.setBackground("#7f1d1d").setFontColor("#fca5a5");
     else if (alertLevel === "WARNING") alertCell.setBackground("#78350f").setFontColor("#fcd34d");
@@ -130,7 +129,6 @@ function testSetup() {
         carMake: "Maruti",
         carModel: "Swift",
         carYear: "2022",
-        regNo: "KA01AB1234",
         engineType: "Petrol",
         odometerNow: 42318,
         litresFilled: 38.5,
