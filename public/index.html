@@ -275,7 +275,7 @@ select.ifield option{background:var(--bg3);color:var(--text);}
         </div>
         <div style="margin-top:14px;padding:10px 14px;background:rgba(0,212,170,.05);border:1px solid rgba(0,212,170,.15);border-radius:var(--rsm);font-size:11px;color:var(--text2);line-height:1.5;text-align:left">
           <strong style="color:var(--accent);font-family:var(--font-h)">HOW BASELINE WORKS</strong><br>
-          Your personal mileage baseline is auto-calculated from your first 3 fill-ups using the Tank-to-Tank Method — no guesswork, no self-reporting. This reflects YOUR car's recent average, not a pre-E20 comparison. AI analysis activates from fill-up 4.
+          Your recent personal baseline under current fuel conditions is auto-calculated from your first 3 fill-ups using the Tank-to-Tank Method — no guesswork, no self-reporting. AI analysis activates from fill-up 4.
         </div>
       </div>
       <button class="btn btn-primary" onclick="obNext(2)"><i class="ti ti-arrow-right"></i> GET STARTED</button>
@@ -284,7 +284,12 @@ select.ifield option{background:var(--bg3);color:var(--text);}
     <!-- Step 2: Identity -->
     <div id="ob2" style="display:none">
       <div style="font-family:var(--font-h);font-size:20px;font-weight:700;margin-bottom:4px">Beta Registration</div>
-      <div style="font-size:12px;color:var(--text2);margin-bottom:16px">No personal data stored in our database. Your Tester ID is anonymous.</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:12px">No personal data stored in our database. Your Tester ID is anonymous.</div>
+
+      <div style="background:rgba(0,212,170,.05);border:1px solid rgba(0,212,170,.15);border-radius:var(--rsm);padding:10px 12px;margin-bottom:16px;font-size:11px;color:var(--text2);line-height:1.6">
+        <strong style="color:var(--accent);font-family:var(--font-h)">PRIVACY SUMMARY</strong><br>
+        Collected: anonymous ID, city, vehicle type, fill-up data. Stored: private Google Sheet, owner-only access. Full details on the Profile screen — including how to request deletion.
+      </div>
 
       <div class="ig">
         <div class="il">YOUR NAME (local only, not uploaded)</div>
@@ -464,7 +469,7 @@ select.ifield option{background:var(--bg3);color:var(--text);}
         <div style="flex:1"><div style="font-family:var(--font-h);font-size:13px;font-weight:600">Air Filter</div><div style="font-size:11px;color:var(--text2)">E20 carbon deposit adjusted</div></div>
         <div style="text-align:right"><div style="font-family:var(--font-h);font-size:14px;color:var(--blue)" id="svc-air">— km</div><div style="font-size:9px;color:var(--text3)">REMAINING</div></div>
       </div>
-      <div class="disclaimer">⚠️ These intervals are general informational estimates only — not OEM, ARAI, or MoRTH validated. Always follow your vehicle manufacturer's manual and consult an authorised service centre before any maintenance action.</div>
+      <div class="disclaimer">⚠️ Informational estimates only — not OEM, ARAI, or MoRTH validated, and subordinate to your owner's manual. Always follow your vehicle manufacturer's recommended service schedule and consult an authorised service centre before any maintenance action.</div>
     </div>
 
     <div style="height:6px"></div>
@@ -620,7 +625,7 @@ select.ifield option{background:var(--bg3);color:var(--text);}
       <div class="li"><div class="lico gray"><i class="ti ti-car"></i></div><div style="flex:1"><div style="font-family:var(--font-h);font-size:13px">Make &amp; Model</div></div><div style="font-size:12px;color:var(--text2);text-align:right" id="s-makemodel">—</div></div>
       <div class="li"><div class="lico gray"><i class="ti ti-calendar"></i></div><div style="flex:1"><div style="font-family:var(--font-h);font-size:13px">Year &amp; Engine</div></div><div style="font-size:12px;color:var(--text2);text-align:right" id="s-yeareng">—</div></div>
       <div class="li"><div class="lico gray"><i class="ti ti-id-badge-2"></i></div><div style="flex:1"><div style="font-family:var(--font-h);font-size:13px">Registration</div></div><div style="font-size:12px;color:var(--text2);text-align:right" id="s-reg">—</div></div>
-      <div class="li" style="border-bottom:none"><div class="lico teal"><i class="ti ti-target"></i></div><div style="flex:1"><div style="font-family:var(--font-h);font-size:13px">Baseline KM/L</div><div style="font-size:10px;color:var(--text3)">Your personal avg · Tank-to-Tank Method</div></div><div style="font-size:14px;font-family:var(--font-h);font-weight:700;color:var(--accent)" id="s-baseline">Calibrating…</div></div>
+      <div class="li" style="border-bottom:none"><div class="lico teal"><i class="ti ti-target"></i></div><div style="flex:1"><div style="font-family:var(--font-h);font-size:13px">Baseline KM/L</div><div style="font-size:10px;color:var(--text3)">Recent personal baseline · current fuel · Tank-to-Tank</div></div><div style="font-size:14px;font-family:var(--font-h);font-weight:700;color:var(--accent)" id="s-baseline">Calibrating…</div></div>
     </div>
 
     <!-- AI thresholds -->
@@ -656,6 +661,17 @@ select.ifield option{background:var(--bg3);color:var(--text);}
         <div class="lico purple"><i class="ti ti-file-export"></i></div>
         <div style="flex:1"><div style="font-family:var(--font-h);font-size:13px">Export my data (CSV)</div></div>
         <button style="background:transparent;border:1px solid var(--border2);border-radius:var(--rsm);padding:5px 10px;color:var(--text2);font-family:var(--font-h);font-size:11px;cursor:pointer" onclick="exportCSV()">EXPORT</button>
+      </div>
+    </div>
+
+    <!-- Privacy note -->
+    <div class="card" style="background:rgba(0,212,170,.03)">
+      <div class="slbl" style="margin-top:0">PRIVACY NOTE</div>
+      <div style="font-size:11px;color:var(--text2);line-height:1.7">
+        <strong style="color:var(--text)">What's collected:</strong> Anonymous Tester ID (e.g. EMAX001), city, car make/model/year/engine type, and per-fill-up data (odometer, litres, amount, station, season, full-tank status). No name, phone number, or registration number is uploaded.<br><br>
+        <strong style="color:var(--text)">Where it's stored:</strong> A Google Sheet accessible only to the beta project owner.<br><br>
+        <strong style="color:var(--text)">Who has access:</strong> Only the project owner (Angshuman AI Corp). No third parties, advertisers, or data brokers.<br><br>
+        <strong style="color:var(--text)">Requesting deletion:</strong> Since data is linked only to your anonymous Tester ID (shown above as "EMAX0XX"), message the beta coordinator with your Tester ID and request removal — your row(s) will be deleted from the sheet within 7 days.
       </div>
     </div>
 
@@ -873,11 +889,11 @@ function calcFillup() {
   const pv = document.getElementById("p-verdict");
   if(state.baselineStatus === "CALIBRATING") {
     pv.innerHTML = `<span style="color:var(--accent);font-family:var(--font-h)">FILL ${fillNum} OF 3 — CALIBRATING BASELINE</span><br>
-    <span style="color:var(--text2)">Your personal mileage baseline is being calculated using the <strong style="color:var(--accent)">Tank-to-Tank Method</strong> (distance ÷ fuel) — the standard real-world fuel efficiency formula. This reflects your car's recent E20 average, not a pre-E20 comparison. AI analysis activates after fill-up 3.</span>`;
+    <span style="color:var(--text2)">Your <strong style="color:var(--accent)">recent personal baseline under current fuel conditions</strong> is being calculated using the Tank-to-Tank Method (distance ÷ fuel) — the standard real-world fuel efficiency formula. AI analysis activates after fill-up 3.</span>`;
   } else {
     const level = dropPercent < 0 ? "DATA ANOMALY" : dropPercent <= 10 ? "NORMAL" : dropPercent <= 18 ? "WATCH" : "WARNING";
     const col   = dropPercent <= 10 ? "var(--accent)" : dropPercent <= 18 ? "var(--warn)" : "var(--danger)";
-    pv.innerHTML = `<span style="color:${col};font-family:var(--font-h);font-weight:700">${level}</span> — Drop of ${Math.abs(dropPercent).toFixed(1)}% vs your personal baseline of ${state.baselineKml.toFixed(1)} km/l (Tank-to-Tank Method).`;
+    pv.innerHTML = `<span style="color:${col};font-family:var(--font-h);font-weight:700">${level}</span> — Drop of ${Math.abs(dropPercent).toFixed(1)}% vs your recent personal baseline (${state.baselineKml.toFixed(1)} km/l, Tank-to-Tank Method, current fuel conditions).`;
   }
 
   document.getElementById("save-btn").style.display = "flex";
